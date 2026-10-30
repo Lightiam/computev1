@@ -108,9 +108,9 @@ export function CommandCenter() {
     <div className="relative">
       {/* Input Area */}
       <div className="relative">
-        <div className="flex items-center gap-3 px-4 py-3 bg-[#12121a] border border-white/[0.08] rounded-2xl focus-within:border-violet-500/40 focus-within:shadow-lg focus-within:shadow-violet-500/5 transition-all duration-300">
-          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500/20 to-blue-500/20 border border-violet-500/20">
-            <Sparkles className="w-4 h-4 text-violet-400" />
+        <div className="flex items-center gap-3 px-4 py-3 bg-card border border-border rounded-lg focus-within:border-lightrail/40 focus-within:shadow-lg focus-within:shadow-lightrail/5 transition-all duration-300">
+          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-lightrail/10 border border-lightrail/20">
+            <Sparkles className="w-4 h-4 text-lightrail" />
           </div>
           <input
             ref={inputRef}
@@ -120,17 +120,17 @@ export function CommandCenter() {
             onFocus={() => setShowSuggestions(true)}
             onKeyDown={(e) => { if (e.key === 'Enter') executeCommand(input); }}
             placeholder="Describe what you want to do... (e.g., 'Launch 4x A100 on AWS')"
-            className="flex-1 bg-transparent text-sm text-white placeholder:text-white/30 outline-none"
+            className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none font-mono"
           />
           <button
             onClick={() => executeCommand(input)}
             disabled={isCommandExecuting || !input.trim()}
-            className="flex items-center justify-center w-8 h-8 rounded-lg bg-violet-500 hover:bg-violet-400 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+            className="flex items-center justify-center w-8 h-8 rounded-lg bg-lightrail hover:bg-lightrail/90 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
           >
             {isCommandExecuting ? (
-              <Loader2 className="w-4 h-4 text-white animate-spin" />
+              <Loader2 className="w-4 h-4 text-lightrail-foreground animate-spin" />
             ) : (
-              <ArrowUp className="w-4 h-4 text-white" />
+              <ArrowUp className="w-4 h-4 text-lightrail-foreground" />
             )}
           </button>
         </div>
@@ -142,15 +142,15 @@ export function CommandCenter() {
               initial={{ opacity: 0, y: -5 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -5 }}
-              className="absolute top-full left-0 right-0 mt-2 bg-[#12121a] border border-white/[0.08] rounded-xl overflow-hidden z-50 shadow-2xl"
+              className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-lg overflow-hidden z-50 shadow-2xl"
             >
               {suggestions.filter(s => s.toLowerCase().includes(input.toLowerCase())).slice(0, 4).map((s, i) => (
                 <button
                   key={i}
                   onClick={() => { setInput(s); setShowSuggestions(false); executeCommand(s); }}
-                  className="flex items-center gap-3 w-full px-4 py-2.5 text-left text-sm text-white/60 hover:text-white hover:bg-white/[0.04] transition-colors"
+                  className="flex items-center gap-3 w-full px-4 py-2.5 text-left text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors font-mono"
                 >
-                  <Terminal className="w-3.5 h-3.5 text-white/30" />
+                  <Terminal className="w-3.5 h-3.5 text-muted-foreground" />
                   {s}
                 </button>
               ))}
@@ -174,19 +174,19 @@ export function CommandCenter() {
                   key={cmd.id}
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className={`p-3 rounded-xl border ${
-                    cmd.status === 'success' ? 'bg-emerald-500/[0.03] border-emerald-500/10' :
+                  className={`p-3 rounded-lg border ${
+                    cmd.status === 'success' ? 'bg-lightrail/[0.03] border-lightrail/10' :
                     cmd.status === 'error' ? 'bg-red-500/[0.03] border-red-500/10' :
-                    'bg-white/[0.02] border-white/[0.06]'
+                    'bg-card/50 border-border'
                   }`}
                 >
                   <div className="flex items-center gap-2 mb-1.5">
-                    <span className="text-[10px] font-mono text-white/30">$</span>
-                    <span className="text-xs font-mono text-white/70">{cmd.command}</span>
+                    <span className="text-[10px] font-mono text-muted-foreground">$</span>
+                    <span className="text-xs font-mono text-foreground/70">{cmd.command}</span>
                   </div>
                   <div className="space-y-0.5 pl-4">
                     {cmd.output.map((line, i) => (
-                      <p key={i} className="text-[11px] font-mono text-white/50 leading-relaxed">{line}</p>
+                      <p key={i} className="text-[11px] font-mono text-muted-foreground leading-relaxed">{line}</p>
                     ))}
                   </div>
                 </motion.div>
@@ -233,18 +233,18 @@ export function CommandPalette() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -20 }}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-lg bg-[#12121a] border border-white/[0.08] rounded-2xl shadow-2xl overflow-hidden"
+            className="relative w-full max-w-lg bg-card border border-border rounded-lg shadow-2xl overflow-hidden"
           >
-            <div className="flex items-center gap-3 px-4 py-3 border-b border-white/[0.06]">
-              <Sparkles className="w-4 h-4 text-violet-400" />
+            <div className="flex items-center gap-3 px-4 py-3 border-b border-border">
+              <Sparkles className="w-4 h-4 text-lightrail" />
               <input
                 autoFocus
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Type a command or search..."
-                className="flex-1 bg-transparent text-sm text-white placeholder:text-white/30 outline-none"
+                className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none font-mono"
               />
-              <button onClick={() => setShowCommandPalette(false)} className="text-white/30 hover:text-white/60">
+              <button onClick={() => setShowCommandPalette(false)} className="text-muted-foreground hover:text-foreground">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -253,7 +253,7 @@ export function CommandPalette() {
                 <button
                   key={i}
                   onClick={() => { item.action(); setShowCommandPalette(false); setQuery(''); }}
-                  className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/[0.04] transition-colors"
+                  className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm text-foreground/70 hover:text-foreground hover:bg-accent transition-colors font-mono"
                 >
                   <span>{item.icon}</span>
                   {item.label}

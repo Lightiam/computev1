@@ -24,9 +24,9 @@ export function Sidebar() {
       className="relative flex flex-col h-full bg-[#0a0a0f] border-r border-white/[0.06] overflow-hidden"
     >
       {/* Logo */}
-      <div className="flex items-center gap-3 px-4 h-16 border-b border-white/[0.06]">
-        <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500 to-blue-500 shadow-lg shadow-violet-500/20">
-          <Zap className="w-5 h-5 text-white" />
+      <div className="flex items-center gap-3 px-4 h-16 border-b border-border">
+        <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-lightrail/10 border border-lightrail/20">
+          <Zap className="w-5 h-5 text-lightrail" />
         </div>
         <AnimatePresence>
           {!sidebarCollapsed && (
@@ -36,8 +36,8 @@ export function Sidebar() {
               exit={{ opacity: 0, x: -10 }}
               className="flex flex-col"
             >
-              <span className="text-sm font-semibold text-white tracking-tight">LightOS</span>
-              <span className="text-[10px] text-white/40 font-medium">AI Compute Platform</span>
+              <span className="text-sm font-bold text-foreground tracking-tight font-mono">LightOS</span>
+              <span className="text-[10px] text-muted-foreground font-mono uppercase tracking-wider">AI Orchestration</span>
             </motion.div>
           )}
         </AnimatePresence>
@@ -47,16 +47,16 @@ export function Sidebar() {
       <div className="px-3 pt-4 pb-2">
         <button
           onClick={() => setShowCommandPalette(true)}
-          className="flex items-center gap-2 w-full px-3 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.06] hover:border-white/[0.1] transition-all group"
+          className="flex items-center gap-2 w-full px-3 py-2.5 rounded-lg bg-card/50 border border-border hover:bg-accent hover:border-lightrail/30 transition-all group"
         >
-          <Terminal className="w-4 h-4 text-white/40 group-hover:text-violet-400 transition-colors" />
+          <Terminal className="w-4 h-4 text-muted-foreground group-hover:text-lightrail transition-colors" />
           <AnimatePresence>
             {!sidebarCollapsed && (
               <motion.span
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="text-xs text-white/40 group-hover:text-white/70 transition-colors"
+                className="text-xs text-muted-foreground group-hover:text-foreground transition-colors font-mono"
               >
                 Command ⌘K
               </motion.span>
@@ -73,20 +73,20 @@ export function Sidebar() {
             <button
               key={item.id}
               onClick={() => setView(item.id)}
-              className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-xl transition-all duration-200 ${
+              className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-lg transition-all duration-200 ${
                 isActive
-                  ? 'bg-violet-500/10 border border-violet-500/20 text-violet-300'
-                  : 'text-white/50 hover:text-white/80 hover:bg-white/[0.04] border border-transparent'
+                  ? 'bg-lightrail/10 border border-lightrail/20 text-lightrail'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-accent border border-transparent'
               }`}
             >
-              <item.icon className={`w-[18px] h-[18px] flex-shrink-0 ${isActive ? 'text-violet-400' : ''}`} />
+              <item.icon className={`w-[18px] h-[18px] flex-shrink-0 ${isActive ? 'text-lightrail' : ''}`} />
               <AnimatePresence>
                 {!sidebarCollapsed && (
                   <motion.span
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="text-sm font-medium truncate"
+                    className="text-sm font-medium truncate font-mono"
                   >
                     {item.label}
                   </motion.span>
@@ -95,7 +95,7 @@ export function Sidebar() {
               {isActive && !sidebarCollapsed && (
                 <motion.div
                   layoutId="activeNav"
-                  className="ml-auto w-1.5 h-1.5 rounded-full bg-violet-400"
+                  className="ml-auto w-1.5 h-1.5 rounded-full bg-lightrail"
                 />
               )}
             </button>
@@ -107,7 +107,7 @@ export function Sidebar() {
       <div className="px-3 pb-4">
         <button
           onClick={toggleSidebar}
-          className="flex items-center justify-center w-full py-2 rounded-lg text-white/30 hover:text-white/60 hover:bg-white/[0.04] transition-all"
+          className="flex items-center justify-center w-full py-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-all"
         >
           {sidebarCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
         </button>

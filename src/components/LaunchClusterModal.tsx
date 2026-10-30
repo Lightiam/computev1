@@ -65,33 +65,33 @@ export function LaunchClusterModal({ isOpen, onClose }: LaunchClusterModalProps)
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-2xl bg-[#12121a] border border-white/[0.08] rounded-2xl shadow-2xl overflow-hidden"
+            className="relative w-full max-w-2xl bg-card border border-border rounded-lg shadow-2xl overflow-hidden"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06]">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-border">
               <div>
-                <h2 className="text-lg font-semibold text-white">Launch Cluster</h2>
-                <p className="text-xs text-white/40 mt-0.5">Provision GPU compute resources</p>
+                <h2 className="text-lg font-semibold text-foreground font-mono">Launch Cluster</h2>
+                <p className="text-xs text-muted-foreground mt-0.5 font-mono">Provision GPU compute resources</p>
               </div>
-              <button onClick={onClose} className="p-2 rounded-lg hover:bg-white/[0.06] transition-colors">
-                <X className="w-5 h-5 text-white/60" />
+              <button onClick={onClose} className="p-2 rounded-lg hover:bg-accent transition-colors">
+                <X className="w-5 h-5 text-foreground/60" />
               </button>
             </div>
 
             {/* Progress */}
-            <div className="px-6 py-3 border-b border-white/[0.06] bg-white/[0.02]">
+            <div className="px-6 py-3 border-b border-border bg-card/50">
               <div className="flex items-center gap-2">
                 {[1, 2, 3].map((s) => (
                   <div key={s} className="flex items-center gap-2">
-                    <div className={`flex items-center justify-center w-6 h-6 rounded-full text-xs font-medium ${
-                      step >= s ? 'bg-violet-500 text-white' : 'bg-white/[0.06] text-white/40'
+                    <div className={`flex items-center justify-center w-6 h-6 rounded-full text-xs font-medium font-mono ${
+                      step >= s ? 'bg-lightrail text-lightrail-foreground' : 'bg-accent text-muted-foreground'
                     }`}>
                       {step > s ? <Check className="w-3 h-3" /> : s}
                     </div>
-                    <span className={`text-xs ${step >= s ? 'text-white/80' : 'text-white/40'}`}>
+                    <span className={`text-xs font-mono ${step >= s ? 'text-foreground/80' : 'text-muted-foreground'}`}>
                       {s === 1 ? 'Basic' : s === 2 ? 'Resources' : 'Review'}
                     </span>
-                    {s < 3 && <div className="w-8 h-px bg-white/[0.1]" />}
+                    {s < 3 && <div className="w-8 h-px bg-border" />}
                   </div>
                 ))}
               </div>
@@ -106,18 +106,18 @@ export function LaunchClusterModal({ isOpen, onClose }: LaunchClusterModalProps)
                   className="space-y-4"
                 >
                   <div>
-                    <label className="block text-xs font-medium text-white/70 mb-2">Cluster Name</label>
+                    <label className="block text-xs font-medium text-foreground/70 mb-2 font-mono">Cluster Name</label>
                     <input
                       type="text"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       placeholder="my-training-cluster"
-                      className="w-full px-3 py-2 rounded-lg bg-white/[0.04] border border-white/[0.08] text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-violet-500/50"
+                      className="w-full px-3 py-2 rounded-lg bg-card/50 border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-lightrail/50 font-mono"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-white/70 mb-2">Cloud Provider</label>
+                    <label className="block text-xs font-medium text-foreground/70 mb-2 font-mono">Cloud Provider</label>
                     <div className="grid grid-cols-2 gap-2">
                       {clouds.map((cloud) => (
                         <button
@@ -125,14 +125,14 @@ export function LaunchClusterModal({ isOpen, onClose }: LaunchClusterModalProps)
                           onClick={() => setFormData({ ...formData, cloud: cloud.id })}
                           className={`flex items-center gap-3 p-3 rounded-lg border transition-all ${
                             formData.cloud === cloud.id
-                              ? 'bg-violet-500/10 border-violet-500/30'
-                              : 'bg-white/[0.02] border-white/[0.06] hover:bg-white/[0.04]'
+                              ? 'bg-lightrail/10 border-lightrail/30'
+                              : 'bg-card/50 border-border hover:bg-accent'
                           }`}
                         >
                           <span className="text-lg">{cloud.emoji}</span>
                           <div className="text-left">
-                            <p className="text-xs font-medium text-white/80">{cloud.name}</p>
-                            <p className="text-[10px] text-white/40">{cloud.regions.length} regions</p>
+                            <p className="text-xs font-medium text-foreground/80 font-mono">{cloud.name}</p>
+                            <p className="text-[10px] text-muted-foreground font-mono">{cloud.regions.length} regions</p>
                           </div>
                         </button>
                       ))}
@@ -280,18 +280,18 @@ export function LaunchClusterModal({ isOpen, onClose }: LaunchClusterModalProps)
             </div>
 
             {/* Footer */}
-            <div className="flex items-center justify-between px-6 py-4 border-t border-white/[0.06] bg-white/[0.02]">
+            <div className="flex items-center justify-between px-6 py-4 border-t border-border bg-card/50">
               <button
                 onClick={() => step > 1 && setStep(step - 1)}
                 disabled={step === 1}
-                className="px-4 py-2 rounded-lg text-xs font-medium text-white/60 hover:text-white hover:bg-white/[0.06] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                className="px-4 py-2 rounded-lg text-xs font-medium text-foreground/60 hover:text-foreground hover:bg-accent disabled:opacity-30 disabled:cursor-not-allowed transition-all font-mono"
               >
                 Back
               </button>
               <div className="flex items-center gap-2">
                 <button
                   onClick={onClose}
-                  className="px-4 py-2 rounded-lg text-xs font-medium text-white/60 hover:text-white hover:bg-white/[0.06] transition-all"
+                  className="px-4 py-2 rounded-lg text-xs font-medium text-foreground/60 hover:text-foreground hover:bg-accent transition-all font-mono"
                 >
                   Cancel
                 </button>
@@ -299,14 +299,14 @@ export function LaunchClusterModal({ isOpen, onClose }: LaunchClusterModalProps)
                   <button
                     onClick={() => setStep(step + 1)}
                     disabled={step === 1 && !formData.name}
-                    className="px-4 py-2 rounded-lg bg-violet-500 hover:bg-violet-400 disabled:opacity-30 disabled:cursor-not-allowed text-xs font-medium text-white transition-colors"
+                    className="px-4 py-2 rounded-lg bg-lightrail hover:bg-lightrail/90 disabled:opacity-30 disabled:cursor-not-allowed text-xs font-medium text-lightrail-foreground transition-colors font-mono"
                   >
                     Next
                   </button>
                 ) : (
                   <button
                     onClick={handleSubmit}
-                    className="px-4 py-2 rounded-lg bg-violet-500 hover:bg-violet-400 text-xs font-medium text-white transition-colors"
+                    className="px-4 py-2 rounded-lg bg-lightrail hover:bg-lightrail/90 text-xs font-medium text-lightrail-foreground transition-colors font-mono glow-primary"
                   >
                     Launch Cluster
                   </button>

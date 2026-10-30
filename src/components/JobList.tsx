@@ -37,22 +37,22 @@ export function JobList() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Jobs</h1>
-          <p className="text-sm text-white/40 mt-1">Cluster jobs and managed jobs</p>
+          <h1 className="text-2xl font-bold text-foreground tracking-tight font-mono">Jobs</h1>
+          <p className="text-sm text-muted-foreground mt-1 font-mono">Cluster jobs and managed jobs</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-violet-500 hover:bg-violet-400 text-sm font-medium text-white transition-colors shadow-lg shadow-violet-500/20">
+        <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-lightrail hover:bg-lightrail/90 text-sm font-medium text-lightrail-foreground transition-colors shadow-lg shadow-lightrail/20 font-mono glow-primary">
           <Briefcase className="w-4 h-4" />
           Submit Job
         </button>
       </div>
 
       {/* Cluster Jobs */}
-      <div className="rounded-2xl bg-[#12121a] border border-white/[0.06] overflow-hidden">
-        <div className="px-5 py-3 border-b border-white/[0.06]">
-          <h2 className="text-sm font-semibold text-white">Cluster Jobs</h2>
-          <p className="text-[10px] text-white/40 mt-0.5">Jobs running on provisioned clusters</p>
+      <div className="rounded-lg bg-card border border-border overflow-hidden">
+        <div className="px-5 py-3 border-b border-border">
+          <h2 className="text-sm font-semibold text-foreground font-mono">Cluster Jobs</h2>
+          <p className="text-[10px] text-muted-foreground mt-0.5 font-mono">Jobs running on provisioned clusters</p>
         </div>
-        <div className="divide-y divide-white/[0.04]">
+        <div className="divide-y divide-border/50">
           {jobs.map((job, i) => {
             const status = jobStatusConfig[job.status];
             return (
@@ -61,40 +61,40 @@ export function JobList() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: i * 0.03 }}
-                className="flex items-center gap-4 px-5 py-3 hover:bg-white/[0.02] transition-colors group"
+                className="flex items-center gap-4 px-5 py-3 hover:bg-accent/50 transition-colors group"
               >
                 <div className={`flex items-center justify-center w-8 h-8 rounded-lg border ${status.bg}`}>
                   <status.icon className={`w-3.5 h-3.5 ${status.color}`} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-white/90 truncate">{job.name}</span>
-                    <span className="text-[10px] font-mono text-white/30">#{job.id}</span>
+                    <span className="text-sm font-medium text-foreground/90 truncate font-mono">{job.name}</span>
+                    <span className="text-[10px] font-mono text-muted-foreground">#{job.id}</span>
                   </div>
                   <div className="flex items-center gap-3 mt-0.5">
-                    <span className="text-[10px] text-white/40">{job.clusterName}</span>
-                    <span className="text-[10px] text-white/30">•</span>
-                    <span className="text-[10px] text-white/40">{job.resources}</span>
-                    <span className="text-[10px] text-white/30">•</span>
-                    <span className="text-[10px] text-white/40">{job.userName}</span>
+                    <span className="text-[10px] text-muted-foreground font-mono">{job.clusterName}</span>
+                    <span className="text-[10px] text-muted-foreground">•</span>
+                    <span className="text-[10px] text-muted-foreground font-mono">{job.resources}</span>
+                    <span className="text-[10px] text-muted-foreground">•</span>
+                    <span className="text-[10px] text-muted-foreground font-mono">{job.userName}</span>
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-medium border ${status.bg} ${status.color}`}>
+                  <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-medium border font-mono ${status.bg} ${status.color}`}>
                     {job.status}
                   </span>
-                  <p className="text-[10px] text-white/30 mt-1">{formatDuration(job.duration)}</p>
+                  <p className="text-[10px] text-muted-foreground mt-1 font-mono">{formatDuration(job.duration)}</p>
                 </div>
                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   {(job.status === 'RUNNING' || job.status === 'PENDING') && (
                     <button
                       onClick={() => cancelJob(job.id)}
-                      className="p-1.5 rounded-lg hover:bg-red-500/10 text-white/30 hover:text-red-400 transition-all"
+                      className="p-1.5 rounded-lg hover:bg-red-500/10 text-muted-foreground hover:text-red-400 transition-all"
                     >
                       <XCircle className="w-3.5 h-3.5" />
                     </button>
                   )}
-                  <button className="p-1.5 rounded-lg hover:bg-white/[0.06] text-white/30 hover:text-white/60 transition-all">
+                  <button className="p-1.5 rounded-lg hover:bg-accent text-muted-foreground hover:text-foreground transition-all">
                     <TermIcon className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -105,12 +105,12 @@ export function JobList() {
       </div>
 
       {/* Managed Jobs */}
-      <div className="rounded-2xl bg-[#12121a] border border-white/[0.06] overflow-hidden">
-        <div className="px-5 py-3 border-b border-white/[0.06]">
-          <h2 className="text-sm font-semibold text-white">Managed Jobs</h2>
-          <p className="text-[10px] text-white/40 mt-0.5">Auto-managed jobs with fault tolerance</p>
+      <div className="rounded-lg bg-card border border-border overflow-hidden">
+        <div className="px-5 py-3 border-b border-border">
+          <h2 className="text-sm font-semibold text-foreground font-mono">Managed Jobs</h2>
+          <p className="text-[10px] text-muted-foreground mt-0.5 font-mono">Auto-managed jobs with fault tolerance</p>
         </div>
-        <div className="divide-y divide-white/[0.04]">
+        <div className="divide-y divide-border/50">
           {managedJobs.map((job, i) => {
             const status = managedStatusConfig[job.status];
             return (

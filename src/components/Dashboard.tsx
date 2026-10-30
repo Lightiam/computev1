@@ -25,13 +25,13 @@ export function Dashboard() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Command Center</h1>
-          <p className="text-sm text-white/40 mt-1">Orchestrate your AI compute across any cloud</p>
+          <h1 className="text-2xl font-bold text-foreground tracking-tight font-mono">Command Center</h1>
+          <p className="text-sm text-muted-foreground mt-1 font-mono">Orchestrate your AI compute across any cloud</p>
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-xs font-medium text-emerald-400">All systems operational</span>
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-lightrail/10 border border-lightrail/20">
+            <div className="w-1.5 h-1.5 rounded-full bg-lightrail animate-pulse" />
+            <span className="text-xs font-medium text-lightrail font-mono">All systems operational</span>
           </div>
         </div>
       </div>
@@ -47,19 +47,19 @@ export function Dashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className="relative p-4 rounded-2xl bg-[#12121a] border border-white/[0.06] overflow-hidden group hover:border-white/[0.12] transition-colors"
+            className="relative p-4 rounded-lg bg-card border border-border overflow-hidden group hover:border-lightrail/30 transition-colors"
           >
             <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${stat.color} opacity-[0.03] rounded-full blur-2xl group-hover:opacity-[0.06] transition-opacity`} />
             <div className="flex items-start justify-between mb-3">
-              <div className={`flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br ${stat.color} shadow-lg`}>
+              <div className={`flex items-center justify-center w-9 h-9 rounded-lg bg-gradient-to-br ${stat.color} shadow-lg`}>
                 <stat.icon className="w-4.5 h-4.5 text-white" />
               </div>
-              <ArrowUpRight className="w-4 h-4 text-white/20 group-hover:text-white/40 transition-colors" />
+              <ArrowUpRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
             </div>
             <div className="space-y-1">
-              <p className="text-2xl font-bold text-white tracking-tight">{stat.value}</p>
-              <p className="text-xs text-white/40">{stat.label}</p>
-              {stat.change && <p className="text-[10px] text-emerald-400/70 font-medium">{stat.change}</p>}
+              <p className="text-2xl font-bold text-foreground tracking-tight font-mono">{stat.value}</p>
+              <p className="text-xs text-muted-foreground font-mono">{stat.label}</p>
+              {stat.change && <p className="text-[10px] text-lightrail/70 font-medium font-mono">{stat.change}</p>}
             </div>
           </motion.div>
         ))}
@@ -72,17 +72,17 @@ export function Dashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="lg:col-span-2 p-5 rounded-2xl bg-[#12121a] border border-white/[0.06]"
+          className="lg:col-span-2 p-5 rounded-lg bg-card border border-border"
         >
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-sm font-semibold text-white">Weekly Compute Spend</h3>
-              <p className="text-xs text-white/40 mt-0.5">Cost breakdown by category</p>
+              <h3 className="text-sm font-semibold text-foreground font-mono">Weekly Compute Spend</h3>
+              <p className="text-xs text-muted-foreground mt-0.5 font-mono">Cost breakdown by category</p>
             </div>
-            <div className="flex items-center gap-4 text-xs">
-              <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-violet-500" />Compute</span>
-              <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-blue-500" />Storage</span>
-              <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-cyan-500" />Network</span>
+            <div className="flex items-center gap-4 text-xs font-mono">
+              <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-lightrail" />Compute</span>
+              <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-glow-secondary" />Storage</span>
+              <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-400" />Network</span>
             </div>
           </div>
           <div className="h-48">
@@ -90,27 +90,27 @@ export function Dashboard() {
               <AreaChart data={costData}>
                 <defs>
                   <linearGradient id="computeGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#06b6d4" stopOpacity={0.3} />
+                    <stop offset="100%" stopColor="#06b6d4" stopOpacity={0} />
+                  </linearGradient>
+                  <linearGradient id="storageGrad" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.3} />
                     <stop offset="100%" stopColor="#8b5cf6" stopOpacity={0} />
                   </linearGradient>
-                  <linearGradient id="storageGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.3} />
-                    <stop offset="100%" stopColor="#3b82f6" stopOpacity={0} />
-                  </linearGradient>
                   <linearGradient id="networkGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#06b6d4" stopOpacity={0.3} />
-                    <stop offset="100%" stopColor="#06b6d4" stopOpacity={0} />
+                    <stop offset="0%" stopColor="#10b981" stopOpacity={0.3} />
+                    <stop offset="100%" stopColor="#10b981" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 11 }} />
                 <YAxis axisLine={false} tickLine={false} tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 11 }} tickFormatter={(v) => `$${v}`} />
                 <Tooltip
-                  contentStyle={{ background: '#1a1a2e', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', fontSize: '12px' }}
+                  contentStyle={{ background: '#171717', border: '1px solid #262626', borderRadius: '8px', fontSize: '12px', fontFamily: 'monospace' }}
                   labelStyle={{ color: 'rgba(255,255,255,0.7)' }}
                 />
-                <Area type="monotone" dataKey="compute" stackId="1" stroke="#8b5cf6" fill="url(#computeGrad)" strokeWidth={2} />
-                <Area type="monotone" dataKey="storage" stackId="1" stroke="#3b82f6" fill="url(#storageGrad)" strokeWidth={2} />
-                <Area type="monotone" dataKey="network" stackId="1" stroke="#06b6d4" fill="url(#networkGrad)" strokeWidth={2} />
+                <Area type="monotone" dataKey="compute" stackId="1" stroke="#06b6d4" fill="url(#computeGrad)" strokeWidth={2} />
+                <Area type="monotone" dataKey="storage" stackId="1" stroke="#8b5cf6" fill="url(#storageGrad)" strokeWidth={2} />
+                <Area type="monotone" dataKey="network" stackId="1" stroke="#10b981" fill="url(#networkGrad)" strokeWidth={2} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -121,24 +121,24 @@ export function Dashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="p-5 rounded-2xl bg-[#12121a] border border-white/[0.06]"
+          className="p-5 rounded-lg bg-card border border-border"
         >
-          <h3 className="text-sm font-semibold text-white mb-4">Recent Activity</h3>
+          <h3 className="text-sm font-semibold text-foreground mb-4 font-mono">Recent Activity</h3>
           <div className="space-y-3">
             {[
-              { icon: Zap, text: 'Cluster rl-experiment launched', time: '2m ago', color: 'text-violet-400' },
-              { icon: Activity, text: 'Job train-llama-70b running', time: '15m ago', color: 'text-blue-400' },
+              { icon: Zap, text: 'Cluster rl-experiment launched', time: '2m ago', color: 'text-lightrail' },
+              { icon: Activity, text: 'Job train-llama-70b running', time: '15m ago', color: 'text-glow-secondary' },
               { icon: TrendingUp, text: 'GPU utilization peaked at 94%', time: '1h ago', color: 'text-emerald-400' },
-              { icon: Server, text: 'data-pipeline stopped (idle)', time: '3h ago', color: 'text-orange-400' },
-              { icon: Briefcase, text: 'Managed job eval-mmlu succeeded', time: '5h ago', color: 'text-cyan-400' },
+              { icon: Server, text: 'data-pipeline stopped (idle)', time: '3h ago', color: 'text-amber-400' },
+              { icon: Briefcase, text: 'Managed job eval-mmlu succeeded', time: '5h ago', color: 'text-lightrail' },
             ].map((item, i) => (
               <div key={i} className="flex items-start gap-3">
                 <div className={`mt-0.5 ${item.color}`}>
                   <item.icon className="w-3.5 h-3.5" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-white/70 truncate">{item.text}</p>
-                  <p className="text-[10px] text-white/30 mt-0.5">{item.time}</p>
+                  <p className="text-xs text-foreground/70 truncate font-mono">{item.text}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5 font-mono">{item.time}</p>
                 </div>
               </div>
             ))}
@@ -151,9 +151,9 @@ export function Dashboard() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
-        className="p-5 rounded-2xl bg-[#12121a] border border-white/[0.06]"
+        className="p-5 rounded-lg bg-card border border-border"
       >
-        <h3 className="text-sm font-semibold text-white mb-4">Quick Actions</h3>
+        <h3 className="text-sm font-semibold text-foreground mb-4 font-mono">Quick Actions</h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
             { label: 'Launch Cluster', desc: 'Provision GPU compute', emoji: '🚀' },
@@ -163,11 +163,11 @@ export function Dashboard() {
           ].map((action, i) => (
             <button
               key={i}
-              className="flex flex-col items-start p-3 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.04] hover:border-white/[0.12] transition-all group"
+              className="flex flex-col items-start p-3 rounded-lg bg-card/50 border border-border hover:bg-accent hover:border-lightrail/30 transition-all group"
             >
               <span className="text-lg mb-1">{action.emoji}</span>
-              <span className="text-xs font-medium text-white/80 group-hover:text-white">{action.label}</span>
-              <span className="text-[10px] text-white/30">{action.desc}</span>
+              <span className="text-xs font-medium text-foreground/80 group-hover:text-foreground font-mono">{action.label}</span>
+              <span className="text-[10px] text-muted-foreground font-mono">{action.desc}</span>
             </button>
           ))}
         </div>
