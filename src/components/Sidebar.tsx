@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useStore } from '../store';
 import {
   LayoutDashboard, Server, Briefcase, Globe, FileText,
-  Settings, ChevronLeft, ChevronRight, Zap, Terminal
+  Settings, ChevronLeft, ChevronRight, BrainCircuit, Terminal
 } from 'lucide-react';
 
 const navItems = [
@@ -26,7 +26,7 @@ export function Sidebar() {
       {/* Logo */}
       <div className="flex items-center gap-3 px-4 h-16 border-b border-border">
         <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-lightrail/10 border border-lightrail/20">
-          <Zap className="w-5 h-5 text-lightrail" />
+          <BrainCircuit className="w-5 h-5 text-lightrail" />
         </div>
         <AnimatePresence>
           {!sidebarCollapsed && (
