@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useStore } from '../store';
 import { CommandResult } from '../types';
 import { Terminal, Sparkles, ArrowUp, Loader2, X } from 'lucide-react';
+import { toast } from './Toast';
 
 const suggestions = [
   'Launch 4x A100 cluster on AWS',
@@ -94,6 +95,13 @@ export function CommandCenter() {
 
     addCommand(result);
     setCommandExecuting(false);
+
+    // Show toast notification
+    if (result.status === 'success') {
+      toast.success('Command Executed', cmd);
+    } else {
+      toast.error('Command Failed', result.output[0]);
+    }
   };
 
   return (

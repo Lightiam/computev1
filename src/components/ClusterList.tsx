@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useStore } from '../store';
 import { Cluster, ClusterStatus } from '../types';
-import { Server, Play, Square, Trash2, Clock, MapPin, Cpu, ExternalLink } from 'lucide-react';
+import { Server, Play, Square, Trash2, Clock, MapPin, Cpu, ExternalLink, Plus } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import { LaunchClusterModal } from './LaunchClusterModal';
+import { toast } from './Toast';
 
 const statusConfig: Record<ClusterStatus, { color: string; bg: string; label: string }> = {
   INIT: { color: 'text-amber-400', bg: 'bg-amber-400/10 border-amber-400/20', label: 'Initializing' },
@@ -18,6 +21,16 @@ const cloudIcons: Record<string, string> = {
 function ClusterCard({ cluster }: { cluster: Cluster }) {
   const { stopCluster, terminateCluster } = useStore();
   const status = statusConfig[cluster.status];
+
+  const handleStop = () => {
+    stopCluster(cluster.id);
+    toast.success('Cluster Stopped', `${cluster.name} has been stopped`);
+  };
+
+  const handleTerminate = () => {
+    terminateCluster(cluster.id);
+    toast.warning('Cluster Terminated', `${cluster.name} has been terminated`);
+  };
 
   return (
     <motion.div
@@ -85,13 +98,13 @@ function ClusterCard({ cluster }: { cluster: Cluster }) {
         {cluster.status === 'UP' && (
           <>
             <button
-              onClick={() => stopCluster(cluster.id)}
+              onClick={handleStop}
               className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.06] text-[10px] text-white/60 hover:text-white hover:bg-white/[0.08] transition-all"
             >
               <Square className="w-3 h-3" /> Stop
             </button>
             <button
-              onClick={() => terminateCluster(cluster.id)}
+              onClick={handleTerminate}
               className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-red-500/[0.06] border border-red-500/10 text-[10px] text-red-400/70 hover:text-red-400 hover:bg-red-500/10 transition-all"
             >
               <Trash2 className="w-3 h-3" /> Terminate
@@ -119,6 +132,7 @@ function ClusterCard({ cluster }: { cluster: Cluster }) {
 
 export function ClusterList() {
   const { clusters } = useStore();
+  const [showLaunchModal, setShowLaunchModal] = useState(false);
 
   return (
     <div className="space-y-6">
@@ -127,11 +141,16 @@ export function ClusterList() {
           <h1 className="text-2xl font-bold text-white tracking-tight">Clusters</h1>
           <p className="text-sm text-white/40 mt-1">{clusters.length} clusters across {new Set(clusters.map(c => c.cloud)).size} providers</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-violet-500 hover:bg-violet-400 text-sm font-medium text-white transition-colors shadow-lg shadow-violet-500/20">
-          <Server className="w-4 h-4" />
+        <button 
+          onClick={() => setShowLaunchModal(true)}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-violet-500 hover:bg-violet-400 text-sm font-medium text-white transition-colors shadow-lg shadow-violet-500/20"
+        >
+          <Plus className="w-4 h-4" />
           Launch Cluster
         </button>
       </div>
+
+      <LaunchClusterModal isOpen={showLaunchModal} onClose={() => setShowLaunchModal(false)} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {clusters.map((cluster, i) => (

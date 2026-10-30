@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useStore } from '../store';
 import { CommandCenter } from './CommandCenter';
+import { CostAnalytics } from './CostAnalytics';
 import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
 import { Server, Briefcase, DollarSign, Cpu, TrendingUp, Activity, Zap, ArrowUpRight } from 'lucide-react';
 
@@ -170,6 +171,15 @@ export function Dashboard() {
             </button>
           ))}
         </div>
+      </motion.div>
+
+      {/* Cost Analytics */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.7 }}
+      >
+        <CostAnalytics />
       </motion.div>
     </div>
   );
