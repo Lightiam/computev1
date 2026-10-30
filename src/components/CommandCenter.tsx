@@ -208,52 +208,53 @@ export function CommandPalette() {
 
   const filtered = actions.filter(a => a.label.toLowerCase().includes(query.toLowerCase()));
 
-  if (!showCommandPalette) return null;
-
   return (
     <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[100] flex items-start justify-center pt-[20vh]"
-        onClick={() => setShowCommandPalette(false)}
-      >
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+      {showCommandPalette && (
         <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: -20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: -20 }}
-          onClick={(e) => e.stopPropagation()}
-          className="relative w-full max-w-lg bg-[#12121a] border border-white/[0.08] rounded-2xl shadow-2xl overflow-hidden"
+          key="command-palette"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[100] flex items-start justify-center pt-[20vh]"
+          onClick={() => setShowCommandPalette(false)}
         >
-          <div className="flex items-center gap-3 px-4 py-3 border-b border-white/[0.06]">
-            <Sparkles className="w-4 h-4 text-violet-400" />
-            <input
-              autoFocus
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Type a command or search..."
-              className="flex-1 bg-transparent text-sm text-white placeholder:text-white/30 outline-none"
-            />
-            <button onClick={() => setShowCommandPalette(false)} className="text-white/30 hover:text-white/60">
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-          <div className="max-h-72 overflow-y-auto p-2">
-            {filtered.map((item, i) => (
-              <button
-                key={i}
-                onClick={() => { item.action(); setShowCommandPalette(false); setQuery(''); }}
-                className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/[0.04] transition-colors"
-              >
-                <span>{item.icon}</span>
-                {item.label}
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: -20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: -20 }}
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-lg bg-[#12121a] border border-white/[0.08] rounded-2xl shadow-2xl overflow-hidden"
+          >
+            <div className="flex items-center gap-3 px-4 py-3 border-b border-white/[0.06]">
+              <Sparkles className="w-4 h-4 text-violet-400" />
+              <input
+                autoFocus
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Type a command or search..."
+                className="flex-1 bg-transparent text-sm text-white placeholder:text-white/30 outline-none"
+              />
+              <button onClick={() => setShowCommandPalette(false)} className="text-white/30 hover:text-white/60">
+                <X className="w-4 h-4" />
               </button>
-            ))}
-          </div>
+            </div>
+            <div className="max-h-72 overflow-y-auto p-2">
+              {filtered.map((item, i) => (
+                <button
+                  key={i}
+                  onClick={() => { item.action(); setShowCommandPalette(false); setQuery(''); }}
+                  className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/[0.04] transition-colors"
+                >
+                  <span>{item.icon}</span>
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </motion.div>
         </motion.div>
-      </motion.div>
+      )}
     </AnimatePresence>
   );
 }
