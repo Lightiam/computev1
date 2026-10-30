@@ -135,7 +135,7 @@ export const mockServices: Service[] = [
 ];
 
 export const mockLogs: LogEntry[] = [
-  { timestamp: Date.now() - 5000, level: 'INFO', message: 'SkyPilot runtime initialized successfully', source: 'skylet' },
+  { timestamp: Date.now() - 5000, level: 'INFO', message: 'LightOS runtime initialized successfully', source: 'skylet' },
   { timestamp: Date.now() - 4500, level: 'INFO', message: 'Provisioning cluster llama-train-v3...', source: 'provisioner' },
   { timestamp: Date.now() - 4000, level: 'INFO', message: 'Requesting 4x p4d.24xlarge instances in us-east-1a', source: 'provisioner' },
   { timestamp: Date.now() - 3500, level: 'INFO', message: 'AWS API: RunInstances returned 4 instances', source: 'aws' },

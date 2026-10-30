@@ -1,4 +1,4 @@
-// Core data models derived from SkyPilot's architecture
+// Core data models derived from LightOS's architecture
 
 export type ClusterStatus = 'INIT' | 'UP' | 'STOPPED' | 'TERMINATED';
 export type JobStatus = 'PENDING' | 'RUNNING' | 'SUCCEEDED' | 'FAILED' | 'CANCELLED';

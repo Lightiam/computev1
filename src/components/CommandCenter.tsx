@@ -87,7 +87,7 @@ export function CommandCenter() {
       result.output = [
         `🤖 Processing: "${cmd}"`,
         `   Analyzing intent...`,
-        `   Mapping to SkyPilot API...`,
+        `   Mapping to LightOS API...`,
         `✓ Command executed successfully.`,
       ];
       result.status = 'success';

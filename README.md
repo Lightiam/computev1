@@ -1,8 +1,8 @@
-# SkyPilot AI Compute Platform
+# LightOS AI Compute Platform
 
 A modern, production-ready web application for orchestrating AI compute resources across multiple cloud providers. Built with React, TypeScript, Tailwind CSS, and inspired by LightOS UI paradigms.
 
-![SkyPilot Platform](https://img.shields.io/badge/Status-Production%20Ready-success)
+![LightOS Platform](https://img.shields.io/badge/Status-Production%20Ready-success)
 ![React](https://img.shields.io/badge/React-18.2-blue)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.1-38bdf8)
@@ -40,7 +40,7 @@ A modern, production-ready web application for orchestrating AI compute resource
 ## 🎯 Architecture
 
 ### Data Models
-Based on SkyPilot's core architecture:
+Based on LightOS's core architecture:
 
 - **Cluster**: Represents provisioned compute resources
   - Status: INIT → UP → STOPPED → TERMINATED
@@ -57,7 +57,7 @@ Based on SkyPilot's core architecture:
   - Health monitoring
 
 ### Mock Service Layer
-The application includes a comprehensive mock service layer that simulates SkyPilot's behavior:
+The application includes a comprehensive mock service layer that simulates LightOS's behavior:
 - Realistic state transitions with delays
 - Cost calculations based on GPU types and usage
 - Log streaming simulation
@@ -68,7 +68,7 @@ The application includes a comprehensive mock service layer that simulates SkyPi
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd skypilot-platform
+cd lightos-platform
 
 # Install dependencies
 npm install
@@ -163,7 +163,7 @@ Natural language interface:
 Create a `.env` file for production deployment:
 
 ```env
-VITE_API_URL=https://api.skypilot.ai
+VITE_API_URL=https://api.lightos.ai
 VITE_AUTH_TOKEN=your_token_here
 ```
 
@@ -223,7 +223,7 @@ This project is licensed under the MIT License.
 
 ## 🙏 Acknowledgments
 
-- **SkyPilot**: Core architecture and data models
+- **LightOS**: Core architecture and data models
 - **LightOS**: UI/UX design inspiration
 - **Framer Motion**: Smooth animation library
 - **Tailwind CSS**: Utility-first CSS framework

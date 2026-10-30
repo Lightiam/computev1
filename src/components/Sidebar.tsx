@@ -36,7 +36,7 @@ export function Sidebar() {
               exit={{ opacity: 0, x: -10 }}
               className="flex flex-col"
             >
-              <span className="text-sm font-semibold text-white tracking-tight">SkyPilot</span>
+              <span className="text-sm font-semibold text-white tracking-tight">LightOS</span>
               <span className="text-[10px] text-white/40 font-medium">AI Compute Platform</span>
             </motion.div>
           )}
