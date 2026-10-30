@@ -1,0 +1,120 @@
+# LightOS Platform - Complete Source Code
+# This file contains ALL source code for the project
+# Use extract.ps1 to create the project structure
+
+# ============================================================================
+# FILE: src/types/index.ts
+# ============================================================================
+export type ClusterStatus = 'INIT' | 'UP' | 'STOPPED' | 'TERMINATED';
+export type JobStatus = 'PENDING' | 'RUNNING' | 'SUCCEEDED' | 'FAILED' | 'CANCELLED';
+export type ManagedJobStatus = 'SUBMITTED' | 'STARTING' | 'RUNNING' | 'RECOVERING' | 'SUCCEEDED' | 'FAILED' | 'CANCELLED';
+export type CloudProvider = 'AWS' | 'GCP' | 'Azure' | 'Lambda' | 'Kubernetes' | 'RunPod' | 'CoreWeave' | 'Nebius';
+export type ServiceStatus = 'READY' | 'CONTROLLER_INIT' | 'FAILED' | 'SHUTTING_DOWN';
+
+export interface Cluster {
+  id: string; name: string; status: ClusterStatus; cloud: CloudProvider;
+  region: string; zone?: string; resources: ResourceSpec; launchedAt: number;
+  lastUse: string; autostop?: number; toDown: boolean; userHash: string;
+  userName: string; costPerHour: number; totalCost: number; gpuUtilization: number; nodes: number;
+}
+export interface ResourceSpec {
+  accelerators?: string; cpus?: string; memory?: string;
+  instanceType?: string; diskSize?: number; useSpot: boolean;
+}
+export interface Job {
+  id: number; name: string; clusterId: string; clusterName: string;
+  status: JobStatus; submittedAt: number; startedAt?: number; endedAt?: number;
+  resources: string; logPath: string; userName: string; duration?: number;
+}
+export interface ManagedJob {
+  id: number; name: string; status: ManagedJobStatus; resources: string;
+  submittedAt: number; endAt?: number; duration?: number; recoveryCount: number;
+  region?: string; cloud?: CloudProvider;
+}
+export interface Service {
+  name: string; status: ServiceStatus; replicas: number; activeVersions: number[];
+  endpoint?: string; policy?: string; requestedResources: string;
+  loadBalancingPolicy: string; uptime: number;
+}
+export interface LogEntry { timestamp: number; level: 'INFO'|'WARN'|'ERROR'|'DEBUG'; message: string; source?: string; }
+export interface CommandResult { id: string; command: string; output: string[]; status: 'success'|'error'|'pending'; timestamp: number; }
+export interface CloudCredential { id: string; provider: CloudProvider; enabled: boolean; configured: boolean; lastVerified?: number; regions: string[]; }
+export interface CostBreakdown { date: string; compute: number; storage: number; network: number; total: number; }
+
+# ============================================================================
+# FILE: src/data/mockData.ts
+# ============================================================================
+import { Cluster, Job, ManagedJob, Service, LogEntry, CloudCredential, CostBreakdown } from '../types';
+
+export const mockClusters: Cluster[] = [
+  { id:'c1', name:'llama-train-v3', status:'UP', cloud:'AWS', region:'us-east-1', zone:'us-east-1a', resources:{accelerators:'A100:8',cpus:'96',memory:'1152',instanceType:'p4d.24xlarge',diskSize:500,useSpot:false}, launchedAt:Date.now()-3600000*5, lastUse:'sky launch --infra aws/us-east-1 -c llama-train-v3 train.yaml', autostop:60, toDown:false, userHash:'u1', userName:'alex.chen', costPerHour:32.77, totalCost:163.85, gpuUtilization:87, nodes:4 },
+  { id:'c2', name:'inference-gateway', status:'UP', cloud:'GCP', region:'us-central1', resources:{accelerators:'L4:1',cpus:'32',memory:'128',instanceType:'g2-standard-32',diskSize:200,useSpot:false}, launchedAt:Date.now()-3600000*24, lastUse:'sky serve up -n inference-gateway serve.yaml', autostop:30, toDown:false, userHash:'u2', userName:'maria.santos', costPerHour:4.52, totalCost:108.48, gpuUtilization:62, nodes:2 },
+  { id:'c3', name:'data-pipeline', status:'STOPPED', cloud:'Azure', region:'eastus', resources:{cpus:'16',memory:'64',instanceType:'Standard_D16s_v5',diskSize:256,useSpot:false}, launchedAt:Date.now()-3600000*48, lastUse:'sky launch --infra azure -c data-pipeline pipeline.yaml', toDown:false, userHash:'u1', userName:'alex.chen', costPerHour:0, totalCost:89.20, gpuUtilization:0, nodes:1 },
+  { id:'c4', name:'rl-experiment', status:'UP', cloud:'Lambda', region:'us-west-2', resources:{accelerators:'H100:8',cpus:'128',memory:'2048',instanceType:'gpu_8x_h100_sxm5',diskSize:1000,useSpot:false}, launchedAt:Date.now()-3600000*2, lastUse:'sky launch --infra lambda -c rl-experiment rl_train.yaml', autostop:120, toDown:false, userHash:'u3', userName:'james.wright', costPerHour:98.50, totalCost:197.00, gpuUtilization:94, nodes:8 },
+  { id:'c5', name:'k8s-dev-pod', status:'INIT', cloud:'Kubernetes', region:'us-west1', resources:{accelerators:'A10G:1',cpus:'8',memory:'32',diskSize:100,useSpot:false}, launchedAt:Date.now()-60000*3, lastUse:'sky launch --infra k8s/my-cluster -c k8s-dev-pod dev.yaml', toDown:false, userHash:'u2', userName:'maria.santos', costPerHour:1.20, totalCost:0.06, gpuUtilization:0, nodes:1 },
+  { id:'c6', name:'batch-inference', status:'UP', cloud:'CoreWeave', region:'us-east-1', resources:{accelerators:'A100:4',cpus:'48',memory:'384',instanceType:'a100x4',diskSize:500,useSpot:true}, launchedAt:Date.now()-3600000*8, lastUse:'sky jobs launch --infra coreweave -n batch-inference infer.yaml', autostop:45, toDown:true, userHash:'u1', userName:'alex.chen', costPerHour:12.40, totalCost:99.20, gpuUtilization:78, nodes:2 },
+];
+
+export const mockJobs: Job[] = [
+  { id:1, name:'train-llama-70b', clusterId:'c1', clusterName:'llama-train-v3', status:'RUNNING', submittedAt:Date.now()-3600000*4, startedAt:Date.now()-3600000*3.5, resources:'A100:8', logPath:'/sky/logs/1.log', userName:'alex.chen', duration:12600 },
+  { id:2, name:'eval-benchmark', clusterId:'c1', clusterName:'llama-train-v3', status:'PENDING', submittedAt:Date.now()-600000, resources:'A100:2', logPath:'/sky/logs/2.log', userName:'alex.chen' },
+  { id:3, name:'serve-model', clusterId:'c2', clusterName:'inference-gateway', status:'RUNNING', submittedAt:Date.now()-3600000*20, startedAt:Date.now()-3600000*19.5, resources:'L4:1', logPath:'/sky/logs/3.log', userName:'maria.santos', duration:70200 },
+  { id:4, name:'preprocess-data', clusterId:'c3', clusterName:'data-pipeline', status:'SUCCEEDED', submittedAt:Date.now()-3600000*40, startedAt:Date.now()-3600000*39, endedAt:Date.now()-3600000*36, resources:'CPU:16', logPath:'/sky/logs/4.log', userName:'alex.chen', duration:10800 },
+  { id:5, name:'rl-ppo-step', clusterId:'c4', clusterName:'rl-experiment', status:'RUNNING', submittedAt:Date.now()-3600000*1.5, startedAt:Date.now()-3600000*1.2, resources:'H100:8', logPath:'/sky/logs/5.log', userName:'james.wright', duration:4320 },
+  { id:6, name:'finetune-lora', clusterId:'c6', clusterName:'batch-inference', status:'RUNNING', submittedAt:Date.now()-3600000*6, startedAt:Date.now()-3600000*5.5, resources:'A100:4', logPath:'/sky/logs/6.log', userName:'alex.chen', duration:19800 },
+  { id:7, name:'generate-embeddings', clusterId:'c6', clusterName:'batch-inference', status:'SUCCEEDED', submittedAt:Date.now()-3600000*7, startedAt:Date.now()-3600000*6.8, endedAt:Date.now()-3600000*6.2, resources:'A100:4', logPath:'/sky/logs/7.log', userName:'alex.chen', duration:2160 },
+];
+
+export const mockManagedJobs: ManagedJob[] = [
+  { id:101, name:'sweep-hyperparams', status:'RUNNING', resources:'A100:1', submittedAt:Date.now()-3600000*12, duration:43200, recoveryCount:0, region:'us-west-2', cloud:'AWS' },
+  { id:102, name:'eval-mmlu', status:'SUCCEEDED', resources:'A100:2', submittedAt:Date.now()-3600000*24, duration:7200, recoveryCount:0, region:'us-east-1', cloud:'GCP' },
+  { id:103, name:'data-augmentation', status:'RECOVERING', resources:'A10G:1', submittedAt:Date.now()-3600000*6, duration:14400, recoveryCount:2, region:'us-west-2', cloud:'Lambda' },
+  { id:104, name:'batch-embed-v2', status:'SUBMITTED', resources:'L4:2', submittedAt:Date.now()-600000, recoveryCount:0 },
+  { id:105, name:'train-adapter', status:'FAILED', resources:'A100:4', submittedAt:Date.now()-3600000*48, duration:3600, recoveryCount:3, region:'us-east-1', cloud:'CoreWeave' },
+];
+
+export const mockServices: Service[] = [
+  { name:'llm-api-v2', status:'READY', replicas:3, activeVersions:[2], endpoint:'https://llm-api.example.com', policy:'qps_per_replica: 100', requestedResources:'L4:1', loadBalancingPolicy:'round_robin', uptime:864000 },
+  { name:'embedding-service', status:'READY', replicas:2, activeVersions:[1], endpoint:'https://embed.example.com', policy:'qps_per_replica: 200', requestedResources:'A10G:1', loadBalancingPolicy:'least_connections', uptime:432000 },
+  { name:'image-gen', status:'CONTROLLER_INIT', replicas:1, activeVersions:[1], requestedResources:'A100:1', loadBalancingPolicy:'round_robin', uptime:300 },
+];
+
+export const mockLogs: LogEntry[] = [
+  { timestamp:Date.now()-5000, level:'INFO', message:'LightOS runtime initialized successfully', source:'skylet' },
+  { timestamp:Date.now()-4500, level:'INFO', message:'Provisioning cluster llama-train-v3...', source:'provisioner' },
+  { timestamp:Date.now()-4000, level:'INFO', message:'Requesting 4x p4d.24xlarge instances in us-east-1a', source:'provisioner' },
+  { timestamp:Date.now()-3500, level:'INFO', message:'AWS API: RunInstances returned 4 instances', source:'aws' },
+  { timestamp:Date.now()-3000, level:'INFO', message:'Waiting for instances to pass health check...', source:'provisioner' },
+  { timestamp:Date.now()-2500, level:'INFO', message:'All 4 instances healthy. Setting up runtime...', source:'provisioner' },
+  { timestamp:Date.now()-2000, level:'INFO', message:'Installing conda environment: python=3.10, cuda=12.1', source:'setup' },
+  { timestamp:Date.now()-1500, level:'INFO', message:'pip install torch==2.3.0 transformers==4.42.0', source:'setup' },
+  { timestamp:Date.now()-1000, level:'INFO', message:'Syncing workdir to /sky/workdir...', source:'sync' },
+  { timestamp:Date.now()-800, level:'INFO', message:'Starting job: train-llama-70b (job_id=1)', source:'scheduler' },
+  { timestamp:Date.now()-600, level:'INFO', message:'Loading model: meta-llama/Llama-3-70b', source:'train' },
+  { timestamp:Date.now()-400, level:'INFO', message:'Epoch 1/10 | Step 150/1500 | Loss: 2.34 | LR: 3e-4 | GPU Mem: 78.2GB/80GB', source:'train' },
+  { timestamp:Date.now()-200, level:'INFO', message:'Epoch 1/10 | Step 300/1500 | Loss: 2.18 | LR: 3e-4 | GPU Mem: 78.4GB/80GB', source:'train' },
+  { timestamp:Date.now()-100, level:'WARN', message:'GPU 2 temperature elevated: 84°C (threshold: 85°C)', source:'monitor' },
+  { timestamp:Date.now()-50, level:'INFO', message:'Epoch 1/10 | Step 450/1500 | Loss: 2.05 | LR: 2.8e-4 | GPU Mem: 78.1GB/80GB', source:'train' },
+  { timestamp:Date.now()-20, level:'INFO', message:'Checkpoint saved: /sky/checkpoints/step_450.pt', source:'train' },
+];
+
+export const mockCredentials: CloudCredential[] = [
+  { id:'cr1', provider:'AWS', enabled:true, configured:true, lastVerified:Date.now()-3600000, regions:['us-east-1','us-west-2','eu-west-1','ap-southeast-1'] },
+  { id:'cr2', provider:'GCP', enabled:true, configured:true, lastVerified:Date.now()-7200000, regions:['us-central1','us-east1','europe-west4'] },
+  { id:'cr3', provider:'Azure', enabled:true, configured:true, lastVerified:Date.now()-86400000, regions:['eastus','westus2','westeurope'] },
+  { id:'cr4', provider:'Lambda', enabled:true, configured:true, lastVerified:Date.now()-1800000, regions:['us-west-2','us-east-1'] },
+  { id:'cr5', provider:'Kubernetes', enabled:true, configured:true, lastVerified:Date.now()-600000, regions:['us-west1','us-east1'] },
+  { id:'cr6', provider:'CoreWeave', enabled:true, configured:true, lastVerified:Date.now()-3600000, regions:['us-east-1','us-west-2'] },
+  { id:'cr7', provider:'RunPod', enabled:false, configured:false, regions:[] },
+  { id:'cr8', provider:'Nebius', enabled:false, configured:false, regions:[] },
+];
+
+export const mockCostData: CostBreakdown[] = [
+  { date:'Mon', compute:420, storage:45, network:12, total:477 },
+  { date:'Tue', compute:580, storage:45, network:18, total:643 },
+  { date:'Wed', compute:890, storage:48, network:22, total:960 },
+  { date:'Thu', compute:1200, storage:52, network:35, total:1287 },
+  { date:'Fri', compute:980, storage:52, network:28, total:1060 },
+  { date:'Sat', compute:340, storage:48, network:8, total:396 },
+  { date:'Sun', compute:280, storage:45, network:6, total:331 },
+];
