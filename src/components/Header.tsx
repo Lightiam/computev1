@@ -28,6 +28,8 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 flex items-center justify-between h-14 px-6 bg-background/80 backdrop-blur-xl border-b border-border">
       <div className="flex items-center gap-3">
+        <span className="text-[10px] font-mono text-lightrail uppercase tracking-widest">LightOS</span>
+        <span className="text-muted-foreground">/</span>
         <h2 className="text-sm font-medium text-foreground/80 font-mono">{viewTitles[currentView]}</h2>
         <div className="flex items-center gap-2 ml-4">
           <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-lightrail/10 border border-lightrail/20">

@@ -1,8 +1,11 @@
-# LightOS AI Compute Platform
+# LightOS
 
-A modern, production-ready web application for orchestrating AI compute resources across multiple cloud providers. Built with React, TypeScript, Tailwind CSS, and inspired by LightOS UI paradigms.
+**Agent-first AI workload orchestration.**
 
-![LightOS Platform](https://img.shields.io/badge/Status-Production%20Ready-success)
+From workload intent to a plan you approve. AI-powered monitoring and planning for the GPUs you already own or rent.
+
+![LightOS](https://img.shields.io/badge/LightOS-Agent--first-06b6d4)
+![Status](https://img.shields.io/badge/Status-Production%20Ready-success)
 ![React](https://img.shields.io/badge/React-18.2-blue)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.1-38bdf8)

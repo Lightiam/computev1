@@ -25,8 +25,9 @@ export function Dashboard() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground tracking-tight font-mono">Command Center</h1>
-          <p className="text-sm text-muted-foreground mt-1 font-mono">Orchestrate your AI compute across any cloud</p>
+          <p className="font-mono text-[10px] text-lightrail mb-2 uppercase tracking-widest">Agent-first infrastructure</p>
+          <h1 className="text-2xl font-bold text-foreground tracking-tight font-mono">LightOS <span className="text-muted-foreground">/</span> <span className="text-foreground">Command Center</span></h1>
+          <p className="text-sm text-muted-foreground mt-1 font-mono">AI workload orchestration across any cloud</p>
         </div>
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-lightrail/10 border border-lightrail/20">

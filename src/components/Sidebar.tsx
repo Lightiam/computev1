@@ -37,7 +37,7 @@ export function Sidebar() {
               className="flex flex-col"
             >
               <span className="text-sm font-bold text-foreground tracking-tight font-mono">LightOS</span>
-              <span className="text-[10px] text-muted-foreground font-mono uppercase tracking-wider">AI Orchestration</span>
+              <span className="text-[10px] text-lightrail font-mono uppercase tracking-wider">Agent-first</span>
             </motion.div>
           )}
         </AnimatePresence>
