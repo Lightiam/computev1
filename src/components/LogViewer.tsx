@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { useStore } from '../store';
 import { LogEntry } from '../types';
 import { Terminal, Download, Search, Filter } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 
 const levelColors: Record<string, string> = {
@@ -23,8 +23,32 @@ export function LogViewer() {
   const { logs } = useStore();
   const [filter, setFilter] = useState<string>('ALL');
   const [search, setSearch] = useState('');
+  const [isLive, setIsLive] = useState(true);
+  const [liveLogs, setLiveLogs] = useState(logs);
 
-  const filteredLogs = logs.filter(log => {
+  // Simulate live log streaming
+  useEffect(() => {
+    if (!isLive) return;
+    const messages = [
+      { level: 'INFO' as const, message: 'Epoch 1/10 | Step 600/1500 | Loss: 1.98 | LR: 2.5e-4', source: 'train' },
+      { level: 'INFO' as const, message: 'Batch processed in 2.3s (throughput: 1,240 samples/s)', source: 'train' },
+      { level: 'DEBUG' as const, message: 'Gradient norm: 0.847 | Clipping threshold: 1.0', source: 'train' },
+      { level: 'INFO' as const, message: 'Memory allocated: 78.3GB / 80GB (97.9%)', source: 'monitor' },
+      { level: 'INFO' as const, message: 'Syncing checkpoint to s3://bucket/checkpoints/step_600.pt', source: 'sync' },
+      { level: 'WARN' as const, message: 'Network latency spike: 12ms -> 45ms (us-east-1a)', source: 'monitor' },
+      { level: 'INFO' as const, message: 'Epoch 1/10 | Step 750/1500 | Loss: 1.91 | LR: 2.2e-4', source: 'train' },
+      { level: 'INFO' as const, message: 'Validation accuracy: 0.847 (improvement: +0.003)', source: 'eval' },
+    ];
+    
+    const interval = setInterval(() => {
+      const msg = messages[Math.floor(Math.random() * messages.length)];
+      setLiveLogs(prev => [...prev.slice(-50), { ...msg, timestamp: Date.now() }]);
+    }, 2000 + Math.random() * 3000);
+
+    return () => clearInterval(interval);
+  }, [isLive]);
+
+  const filteredLogs = liveLogs.filter(log => {
     if (filter !== 'ALL' && log.level !== filter) return false;
     if (search && !log.message.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
@@ -88,8 +112,15 @@ export function LogViewer() {
           </div>
           <span className="text-[10px] text-white/30 font-mono ml-2">sky logs — train-llama-70b</span>
           <div className="ml-auto flex items-center gap-1.5">
-            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[10px] text-emerald-400/70">Live</span>
+            <button
+              onClick={() => setIsLive(!isLive)}
+              className={`flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-mono transition-all ${
+                isLive ? 'text-lightrail bg-lightrail/10' : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              <div className={`w-1.5 h-1.5 rounded-full ${isLive ? 'bg-lightrail animate-pulse' : 'bg-muted-foreground'}`} />
+              {isLive ? 'Live' : 'Paused'}
+            </button>
           </div>
         </div>
 

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useStore } from '../store';
 import { X, Server, Cpu, Zap, DollarSign, Check } from 'lucide-react';
+import { toast } from './Toast';
 
 interface LaunchClusterModalProps {
   isOpen: boolean;
@@ -39,8 +40,21 @@ export function LaunchClusterModal({ isOpen, onClose }: LaunchClusterModalProps)
   ];
 
   const handleSubmit = () => {
+    if (!formData.name.trim()) return;
     const resources = `${formData.gpuType}:${formData.gpuCount}`;
     launchCluster(formData.name, formData.cloud, resources);
+    toast.success('Cluster Launch Initiated', `${formData.name} is being provisioned on ${formData.cloud}`);
+    setFormData({
+      name: '',
+      cloud: 'AWS',
+      region: 'us-east-1',
+      gpuType: 'A100',
+      gpuCount: 4,
+      instanceType: 'p4d.24xlarge',
+      useSpot: false,
+      autostop: 60,
+    });
+    setStep(1);
     onClose();
   };
 

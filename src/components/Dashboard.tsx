@@ -1,12 +1,15 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useStore } from '../store';
 import { CommandCenter } from './CommandCenter';
 import { CostAnalytics } from './CostAnalytics';
+import { LaunchClusterModal } from './LaunchClusterModal';
 import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
 import { Server, Briefcase, DollarSign, Cpu, TrendingUp, Activity, Zap, ArrowUpRight } from 'lucide-react';
 
 export function Dashboard() {
-  const { clusters, jobs, managedJobs, costData } = useStore();
+  const { clusters, jobs, managedJobs, costData, setView } = useStore();
+  const [showLaunchModal, setShowLaunchModal] = useState(false);
 
   const upClusters = clusters.filter(c => c.status === 'UP');
   const runningJobs = jobs.filter(j => j.status === 'RUNNING');
@@ -156,21 +159,38 @@ export function Dashboard() {
       >
         <h3 className="text-sm font-semibold text-foreground mb-4 font-mono">Quick Actions</h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {[
-            { label: 'Launch Cluster', desc: 'Provision GPU compute', emoji: '🚀' },
-            { label: 'Submit Job', desc: 'Run training/inference', emoji: '▶️' },
-            { label: 'Deploy Service', desc: 'Auto-scaling endpoint', emoji: '🌐' },
-            { label: 'View Costs', desc: 'Spending analytics', emoji: '💰' },
-          ].map((action, i) => (
-            <button
-              key={i}
-              className="flex flex-col items-start p-3 rounded-lg bg-card/50 border border-border hover:bg-accent hover:border-lightrail/30 transition-all group"
-            >
-              <span className="text-lg mb-1">{action.emoji}</span>
-              <span className="text-xs font-medium text-foreground/80 group-hover:text-foreground font-mono">{action.label}</span>
-              <span className="text-[10px] text-muted-foreground font-mono">{action.desc}</span>
-            </button>
-          ))}
+          <button
+            onClick={() => setShowLaunchModal(true)}
+            className="flex flex-col items-start p-3 rounded-lg bg-card/50 border border-border hover:bg-accent hover:border-lightrail/30 transition-all group"
+          >
+            <span className="text-lg mb-1">🚀</span>
+            <span className="text-xs font-medium text-foreground/80 group-hover:text-foreground font-mono">Launch Cluster</span>
+            <span className="text-[10px] text-muted-foreground font-mono">Provision GPU compute</span>
+          </button>
+          <button
+            onClick={() => setView('jobs')}
+            className="flex flex-col items-start p-3 rounded-lg bg-card/50 border border-border hover:bg-accent hover:border-lightrail/30 transition-all group"
+          >
+            <span className="text-lg mb-1">▶️</span>
+            <span className="text-xs font-medium text-foreground/80 group-hover:text-foreground font-mono">Submit Job</span>
+            <span className="text-[10px] text-muted-foreground font-mono">Run training/inference</span>
+          </button>
+          <button
+            onClick={() => setView('services')}
+            className="flex flex-col items-start p-3 rounded-lg bg-card/50 border border-border hover:bg-accent hover:border-lightrail/30 transition-all group"
+          >
+            <span className="text-lg mb-1">🌐</span>
+            <span className="text-xs font-medium text-foreground/80 group-hover:text-foreground font-mono">Deploy Service</span>
+            <span className="text-[10px] text-muted-foreground font-mono">Auto-scaling endpoint</span>
+          </button>
+          <button
+            onClick={() => setView('dashboard')}
+            className="flex flex-col items-start p-3 rounded-lg bg-card/50 border border-border hover:bg-accent hover:border-lightrail/30 transition-all group"
+          >
+            <span className="text-lg mb-1">💰</span>
+            <span className="text-xs font-medium text-foreground/80 group-hover:text-foreground font-mono">View Costs</span>
+            <span className="text-[10px] text-muted-foreground font-mono">Spending analytics</span>
+          </button>
         </div>
       </motion.div>
 
@@ -182,6 +202,9 @@ export function Dashboard() {
       >
         <CostAnalytics />
       </motion.div>
+
+      {/* Launch Cluster Modal */}
+      <LaunchClusterModal isOpen={showLaunchModal} onClose={() => setShowLaunchModal(false)} />
     </div>
   );
 }

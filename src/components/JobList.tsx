@@ -1,8 +1,10 @@
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useStore } from '../store';
 import { Job, JobStatus, ManagedJob, ManagedJobStatus } from '../types';
-import { Briefcase, Play, XCircle, Clock, Terminal as TermIcon, RefreshCw } from 'lucide-react';
+import { Briefcase, Play, XCircle, Clock, Terminal as TermIcon, RefreshCw, X } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import { toast } from './Toast';
 
 const jobStatusConfig: Record<JobStatus, { color: string; bg: string; icon: typeof Play }> = {
   PENDING: { color: 'text-amber-400', bg: 'bg-amber-400/10 border-amber-400/20', icon: Clock },
@@ -31,7 +33,28 @@ function formatDuration(seconds?: number): string {
 }
 
 export function JobList() {
-  const { jobs, managedJobs, cancelJob } = useStore();
+  const { jobs, managedJobs, cancelJob, submitJob, clusters } = useStore();
+  const [showSubmitModal, setShowSubmitModal] = useState(false);
+  const [jobName, setJobName] = useState('');
+  const [selectedClusterId, setSelectedClusterId] = useState('');
+  const [jobResources, setJobResources] = useState('A100:1');
+
+  const handleSubmitJob = () => {
+    if (!jobName.trim() || !selectedClusterId) return;
+    submitJob(jobName, selectedClusterId, jobResources);
+    toast.success('Job Submitted', `${jobName} is now queued on the selected cluster`);
+    setJobName('');
+    setSelectedClusterId('');
+    setJobResources('A100:1');
+    setShowSubmitModal(false);
+  };
+
+  const handleCancelJob = (id: number, name: string) => {
+    cancelJob(id);
+    toast.warning('Job Cancelled', `${name} has been cancelled`);
+  };
+
+  const upClusters = clusters.filter(c => c.status === 'UP');
 
   return (
     <div className="space-y-6">
@@ -40,11 +63,106 @@ export function JobList() {
           <h1 className="text-2xl font-bold text-foreground tracking-tight font-mono">Jobs</h1>
           <p className="text-sm text-muted-foreground mt-1 font-mono">Cluster jobs and managed jobs</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-lightrail hover:bg-lightrail/90 text-sm font-medium text-lightrail-foreground transition-colors shadow-lg shadow-lightrail/20 font-mono glow-primary">
+        <button 
+          onClick={() => setShowSubmitModal(true)}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-lightrail hover:bg-lightrail/90 text-sm font-medium text-lightrail-foreground transition-colors shadow-lg shadow-lightrail/20 font-mono glow-primary"
+        >
           <Briefcase className="w-4 h-4" />
           Submit Job
         </button>
       </div>
+
+      {/* Submit Job Modal */}
+      <AnimatePresence>
+        {showSubmitModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            onClick={() => setShowSubmitModal(false)}
+          >
+            <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative w-full max-w-md bg-card border border-border rounded-lg shadow-2xl overflow-hidden"
+            >
+              <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+                <h2 className="text-lg font-semibold text-foreground font-mono">Submit Job</h2>
+                <button onClick={() => setShowSubmitModal(false)} className="p-2 rounded-lg hover:bg-accent transition-colors">
+                  <X className="w-5 h-5 text-foreground/60" />
+                </button>
+              </div>
+              <div className="p-6 space-y-4">
+                <div>
+                  <label className="block text-xs font-medium text-foreground/70 mb-2 font-mono">Job Name</label>
+                  <input
+                    type="text"
+                    value={jobName}
+                    onChange={(e) => setJobName(e.target.value)}
+                    placeholder="my-training-job"
+                    className="w-full px-3 py-2 rounded-lg bg-card/50 border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-lightrail/50 font-mono"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-foreground/70 mb-2 font-mono">Target Cluster</label>
+                  <select
+                    value={selectedClusterId}
+                    onChange={(e) => setSelectedClusterId(e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-card/50 border border-border text-sm text-foreground focus:outline-none focus:border-lightrail/50 font-mono"
+                  >
+                    <option value="">Select a cluster...</option>
+                    {upClusters.map(c => (
+                      <option key={c.id} value={c.id}>{c.name} ({c.cloud} — {c.resources.accelerators || 'CPU'})</option>
+                    ))}
+                  </select>
+                  {upClusters.length === 0 && (
+                    <p className="text-[10px] text-amber-400 mt-1 font-mono">No running clusters. Launch one first.</p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-foreground/70 mb-2 font-mono">Resources</label>
+                  <select
+                    value={jobResources}
+                    onChange={(e) => setJobResources(e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-card/50 border border-border text-sm text-foreground focus:outline-none focus:border-lightrail/50 font-mono"
+                  >
+                    <option value="A100:1">1x A100</option>
+                    <option value="A100:2">2x A100</option>
+                    <option value="A100:4">4x A100</option>
+                    <option value="A100:8">8x A100</option>
+                    <option value="H100:1">1x H100</option>
+                    <option value="H100:4">4x H100</option>
+                    <option value="H100:8">8x H100</option>
+                    <option value="L4:1">1x L4</option>
+                    <option value="L4:2">2x L4</option>
+                    <option value="CPU:8">8 CPUs</option>
+                    <option value="CPU:16">16 CPUs</option>
+                  </select>
+                </div>
+              </div>
+              <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-border bg-card/50">
+                <button
+                  onClick={() => setShowSubmitModal(false)}
+                  className="px-4 py-2 rounded-lg text-xs font-medium text-foreground/60 hover:text-foreground hover:bg-accent transition-all font-mono"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSubmitJob}
+                  disabled={!jobName.trim() || !selectedClusterId}
+                  className="px-4 py-2 rounded-lg bg-lightrail hover:bg-lightrail/90 disabled:opacity-30 disabled:cursor-not-allowed text-xs font-medium text-lightrail-foreground transition-colors font-mono glow-primary"
+                >
+                  Submit Job
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Cluster Jobs */}
       <div className="rounded-lg bg-card border border-border overflow-hidden">
@@ -88,7 +206,7 @@ export function JobList() {
                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   {(job.status === 'RUNNING' || job.status === 'PENDING') && (
                     <button
-                      onClick={() => cancelJob(job.id)}
+                      onClick={() => handleCancelJob(job.id, job.name)}
                       className="p-1.5 rounded-lg hover:bg-red-500/10 text-muted-foreground hover:text-red-400 transition-all"
                     >
                       <XCircle className="w-3.5 h-3.5" />
